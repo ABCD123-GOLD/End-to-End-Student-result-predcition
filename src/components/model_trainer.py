@@ -3,7 +3,7 @@ import sys
 from dataclasses import dataclass
 
 from sklearn.ensemble import (
-    AdaBoostClassifier,
+    AdaBoostRegressor,
     GradientBoostingRegressor,
     RandomForestRegressor,
 
@@ -42,14 +42,47 @@ class ModelTrainer:
                 "XGBRegressor": XGBRegressor(),
                 "GradientBoostingRegressor": GradientBoostingRegressor(),
                 "KNeighborsRegressor": KNeighborsRegressor(),
-                "AdaBoostClassifier": AdaBoostClassifier(),
-                "Linear Regression": LinearRegression()
+                "AdaBoostRegressor": AdaBoostRegressor()
                 
             }
-            model_report:dict= evaluate_models(X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test, models=models)
+
+                        # ✅ Define hyperparameters
+            params = {
+                "RandomForestRegressor": {
+                    "n_estimators": [50, 100, 200],
+                    "max_depth": [None, 10, 20],
+                    "min_samples_split": [2, 5, 10]
+                },
+                "DecisionTreeRegressor": {
+                    "max_depth": [None, 10, 20, 30],
+                    "min_samples_split": [2, 5, 10]
+                },
+                "XGBRegressor": {
+                    "n_estimators": [50, 100, 200],
+                    "learning_rate": [0.01, 0.1, 0.2],
+                    "max_depth": [3, 6, 9]
+                },
+                "GradientBoostingRegressor": {
+                    "n_estimators": [50, 100, 200],
+                    "learning_rate": [0.01, 0.1, 0.2],
+                    "max_depth": [3, 6, 9]
+                },
+                "KNeighborsRegressor": {
+                    "n_neighbors": [3, 5, 7, 10],
+                    "weights": ["uniform", "distance"],
+                    "metric": ["euclidean", "manhattan"]
+                },
+                "AdaBoostRegressor": {
+                    "n_estimators": [50, 100, 200],
+                    "learning_rate": [0.01, 0.1, 1.0]
+                },
+                
+            }
+            model_report:dict= evaluate_models(X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test, models=models, param=params)
 
             # To get the best model score from the dictionary
             best_model_score= max(sorted(model_report.values()))
+
 
             # To get the best model name from the dictionary
             best_model_name= list(model_report.keys())[list(model_report.values()).index(best_model_score)]
