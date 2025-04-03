@@ -2,7 +2,6 @@ import os
 import sys
 from dataclasses import dataclass
 
-from catboost import CatBoostRegressor
 from sklearn.ensemble import (
     AdaBoostClassifier,
     GradientBoostingRegressor,
@@ -41,14 +40,13 @@ class ModelTrainer:
                 "RandomForestRegressor": RandomForestRegressor(),
                 "DecisionTreeRegressor": DecisionTreeRegressor(),
                 "XGBRegressor": XGBRegressor(),
-                "CatBoostRegressor": CatBoostRegressor(verbose=False),
                 "GradientBoostingRegressor": GradientBoostingRegressor(),
                 "KNeighborsRegressor": KNeighborsRegressor(),
                 "AdaBoostClassifier": AdaBoostClassifier(),
                 "Linear Regression": LinearRegression()
                 
             }
-            model_report:dict= evaluate_models(x_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test, models=models)
+            model_report:dict= evaluate_models(X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test, models=models)
 
             # To get the best model score from the dictionary
             best_model_score= max(sorted(model_report.values()))
@@ -70,11 +68,6 @@ class ModelTrainer:
             return r2_square
 
             
-
-            
-
-
-
         except Exception as e:
             raise CustomException(e, sys)
 
