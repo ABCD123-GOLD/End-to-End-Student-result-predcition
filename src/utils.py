@@ -3,9 +3,8 @@ import numpy as np
 import os
 import sys
 import dill
-fro sklearn.metrics import r2_score
+from sklearn.metrics import r2_score
 from sklearn.linear_model import LinearRegression
-
 
 from src.exception import CustomException
 
@@ -15,7 +14,6 @@ def save_object(file_path, obj):
     """
     try:
         dir_path = os.path.dirname(file_path)
-
         os.makedirs(dir_path, exist_ok=True)  # Create directory if it doesn't exist
 
         with open(file_path, 'wb') as file_obj:
@@ -23,30 +21,25 @@ def save_object(file_path, obj):
 
     except Exception as e:
         raise CustomException(e, sys) from e
-    
 
-def evaluate_model(X,y, model):
-   try:
-       report= {}
-       
-       for i in range (len(list(models))):
-           model= list(models.values())[i]
+def evaluate_models(X_train, y_train, X_test, y_test, models):
+    try:
+        report = {}
 
-           model.fit(X_train, y_train) # Train model
+        for i in range(len(list(models))):
+            model = list(models.values())[i]
 
-           y_train_pred= model.predict(X_train)
+            model.fit(X_train, y_train)  # Train model
 
-           y_test_pred= model.predict(X_test)
+            y_train_pred = model.predict(X_train)
+            y_test_pred = model.predict(X_test)
 
-           train_model_score= r2_score(y_train, y_train_pred)
+            train_model_score = r2_score(y_train, y_train_pred)
+            test_model_score = r2_score(y_test, y_test_pred)
 
-           test_model_score= r2_score(y_test, y_test_pred)
+            report[list(models.keys())[i]] = test_model_score
 
-           train_model_score= r2_score(y_train, y_train_pred)
+        return report 
 
-           test_model_score= r2_score(y_test, y_test_pred)  
-
-           report[list(models.keys())[i]]= test_model_score
-        return report
-   except Exception as e:
-       raise CustomException(e, sys) from e
+    except Exception as e:
+        raise CustomException(e, sys) from e
